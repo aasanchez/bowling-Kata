@@ -1,15 +1,12 @@
-name: Backend-Challenge
+name: PHP-Analisis
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: src
 
     steps:
       - uses: actions/checkout@v2
@@ -17,7 +14,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '7.4'
+          php-version: "7.4"
           extensions: mbstring, intl
           ini-values: post_max_size=256M, short_open_tag=On
           tools: php-cs-fixer, phpunit
@@ -40,8 +37,11 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          name: game-of-life
-          path: src
+          name: bowling-tracker
+          path: |
+            .
+            !vendor/
+            !var/
 
   phpmd:
     name: PHP-Mess-Detector
@@ -51,12 +51,12 @@ jobs:
     steps:
       - uses: actions/download-artifact@v2
         with:
-          name: game-of-life
+          name: bowling-tracker
 
       - name: Setup PHP for phpmd
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '7.4'
+          php-version: "7.4"
           extensions: mbstring, intl
           ini-values: post_max_size=256M, short_open_tag=On
           tools: php-cs-fixer, phpunit
@@ -75,12 +75,12 @@ jobs:
     steps:
       - uses: actions/download-artifact@v2
         with:
-          name: game-of-life
+          name: bowling-tracker
 
       - name: Setup PHP for Psalm
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '7.4'
+          php-version: "7.4"
           extensions: mbstring, intl
           ini-values: post_max_size=256M, short_open_tag=On
           tools: php-cs-fixer, phpunit
@@ -105,12 +105,12 @@ jobs:
     steps:
       - uses: actions/download-artifact@v2
         with:
-          name: game-of-life
+          name: bowling-tracker
 
       - name: Setup PHP for phpcs
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '7.4'
+          php-version: "7.4"
           extensions: mbstring, intl
           ini-values: post_max_size=256M, short_open_tag=On
           tools: php-cs-fixer, phpunit
@@ -129,12 +129,12 @@ jobs:
     steps:
       - uses: actions/download-artifact@v2
         with:
-          name: game-of-life
+          name: bowling-tracker
 
       - name: Setup PHP for phpstan
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '7.4'
+          php-version: "7.4"
           extensions: mbstring, intl
           ini-values: post_max_size=256M, short_open_tag=On
           tools: php-cs-fixer, phpunit
@@ -153,12 +153,12 @@ jobs:
     steps:
       - uses: actions/download-artifact@v2
         with:
-          name: game-of-life
+          name: bowling-tracker
 
       - name: Setup PHP for phpunit
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '7.4'
+          php-version: "7.4"
           extensions: mbstring, intl
           ini-values: post_max_size=256M, short_open_tag=On
           tools: php-cs-fixer, phpunit
