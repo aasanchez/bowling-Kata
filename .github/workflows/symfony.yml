@@ -1,0 +1,170 @@
+name: Backend-Challenge
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: src
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          extensions: mbstring, intl
+          ini-values: post_max_size=256M, short_open_tag=On
+          tools: php-cs-fixer, phpunit
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate
+
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v2
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+
+      - name: Install dependencies
+        if: steps.composer-cache.outputs.cache-hit != 'true'
+        run: composer install --prefer-dist --no-progress --no-suggest
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: game-of-life
+          path: src
+
+  phpmd:
+    name: PHP-Mess-Detector
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: game-of-life
+
+      - name: Setup PHP for phpmd
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          extensions: mbstring, intl
+          ini-values: post_max_size=256M, short_open_tag=On
+          tools: php-cs-fixer, phpunit
+
+      - name: Install dependencies for phpmd
+        run: composer install --prefer-dist --no-progress --no-suggest
+
+      - name: PHP Mess Detector
+        run: ./vendor/bin/phpmd . text cleancode,codesize,controversial,design,naming,unusedcode --exclude 'vendor','var','bin/.phpunit'
+
+  psalm:
+    name: Psalm
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: game-of-life
+
+      - name: Setup PHP for Psalm
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          extensions: mbstring, intl
+          ini-values: post_max_size=256M, short_open_tag=On
+          tools: php-cs-fixer, phpunit
+
+      - name: Install dependencies for Psalm
+        run: composer install --prefer-dist --no-progress --no-suggest
+
+      - name: Psalm
+        run: ./vendor/bin/psalm --show-info=true > psalm.txt
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Psalm
+          path: psalm.txt
+          retention-days: 1
+
+  phpcs:
+    name: PHP CodeSniffer
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: game-of-life
+
+      - name: Setup PHP for phpcs
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          extensions: mbstring, intl
+          ini-values: post_max_size=256M, short_open_tag=On
+          tools: php-cs-fixer, phpunit
+
+      - name: Install dependencies for phpcs
+        run: composer install --prefer-dist --no-progress --no-suggest
+
+      - name: PHPcs
+        run: ./vendor/bin/phpcs .
+
+  phpstan:
+    name: PHPStan
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: game-of-life
+
+      - name: Setup PHP for phpstan
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          extensions: mbstring, intl
+          ini-values: post_max_size=256M, short_open_tag=On
+          tools: php-cs-fixer, phpunit
+
+      - name: Install dependencies for phpstan
+        run: composer install --prefer-dist --no-progress --no-suggest
+
+      - name: PHPcs
+        run: ./vendor/bin/phpstan analyse -c phpstan.neon --no-progress
+
+  phpunit:
+    name: PHP Unit
+    runs-on: ubuntu-latest
+    needs: [psalm, phpmd, phpstan, phpcs]
+
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: game-of-life
+
+      - name: Setup PHP for phpunit
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          extensions: mbstring, intl
+          ini-values: post_max_size=256M, short_open_tag=On
+          tools: php-cs-fixer, phpunit
+
+      - name: Install dependencies for phpunit
+        run: composer install --prefer-dist --no-progress --no-suggest
+
+      - name: PHP Unit
+        run: php bin/phpunit

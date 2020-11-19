@@ -1,0 +1,6 @@
+------------------------------
+No errors found!
+------------------------------
+
+Checks took 0.53 seconds and used 166.749MB of memory
+Psalm was able to infer types for 87.5000% of the codebase
