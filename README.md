@@ -47,3 +47,4 @@ strike or spare, we cannot calculate the frame score: we have to wait one or two
 * 5/ 5/ 5/ 5/ 5/ 5/ 5/ 5/ 5/ 5/5 (21 rolls: 10 pairs of 5 and spare, with a final 5) = 10 frames * 15 points = 150
 * 5- 9- 6/ 5/ X 1- 7/ 6/ X 2/6 This should be 133
 * X X X X X X X X X 6/ XXX = 276
+
