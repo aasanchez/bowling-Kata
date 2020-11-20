@@ -39,6 +39,7 @@ Ten-Pin Bowling, produces the total score for the game.');
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $scoreLine = $input->getOption('score');
+        $scoreLine = strval($scoreLine);
         $this->frames = $this->getFrames($scoreLine);
 
         $limit = count($this->frames);
@@ -97,7 +98,7 @@ Ten-Pin Bowling, produces the total score for the game.');
     protected function calculatePoints(): void
     {
         $limit = count($this->rolls) - 1;
-        for ($i = 0; $i < $limit ; $i += 2) {
+        for ($i = 0; $i < $limit; $i += 2) {
             if ($this->rolls[$i] == 10 && $this->rolls[$i + 1] == 0) { //Strike
                 //Need to detect two strikes in a row
                 if ($this->rolls[$i + 2] == 10 && $this->rolls[$i + 3] == 0) {

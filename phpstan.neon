@@ -8,5 +8,3 @@ parameters:
   excludes_analyse:
     - bin/.phpunit/*
   checkMissingIterableValueType: false
-  ignoreErrors:
-    - '#Unreachable statement - code above always terminates.#'
