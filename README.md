@@ -48,3 +48,29 @@ strike or spare, we cannot calculate the frame score: we have to wait one or two
 * 5- 9- 6/ 5/ X 1- 7/ 6/ X 2/6 This should be 133
 * X X X X X X X X X 6/ XXX = 276
 
+## Usasge
+
+```shell
+$ php bin/console bowling:get-score --score 'X X X X X X X X X XXX'
+300
+```
+
+```shell
+$ php bin/console bowling:get-score --score '9- 9- 9- 9- 9- 9- 9- 9- 9- 9-'
+90
+```
+
+```shell
+$ php bin/console bowling:get-score --score '5/ 5/ 5/ 5/ 5/ 5/ 5/ 5/ 5/ 5/5'
+150
+```
+
+```shell
+$ php bin/console bowling:get-score --score '5- 9- 6/ 5/ X 1- 7/ 6/ X 2/6'
+133
+```
+
+```shell
+$ php bin/console bowling:get-score --score 'X X X X X X X X X 6/ XXX'
+276
+```
