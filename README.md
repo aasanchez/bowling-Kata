@@ -48,7 +48,7 @@ strike or spare, we cannot calculate the frame score: we have to wait one or two
 * 5- 9- 6/ 5/ X 1- 7/ 6/ X 2/6 This should be 133
 * X X X X X X X X X 6/ XXX = 276
 
-## Usasge
+## Usage
 
 ```shell
 $ php bin/console bowling:get-score --score 'X X X X X X X X X XXX'
