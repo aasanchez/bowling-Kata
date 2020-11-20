@@ -4,21 +4,19 @@ namespace App\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class BowlingCommand extends Command
 {
 
     protected static $defaultName = 'bowling:get-score';
 
-    private $frames;
+    private array $frames = [];
 
-    private $rolls = [];
+    private array $rolls = [];
 
-    private $points = [0];
+    private array $points = [0];
 
     public function __construct()
     {
@@ -40,22 +38,24 @@ Ten-Pin Bowling, produces the total score for the game.');
         $scoreLine = $input->getOption('score');
         $this->frames = $this->getFrames($scoreLine);
 
-
-        for ($i = 0; $i < count($this->frames); $i++) {
+        $limit = count($this->frames);
+        for ($i = 0; $i < $limit; $i++) {
             $this->getRolls($this->frames[$i], $i);
         }
+
         $this->calculatePoints();
         $output->write(end($this->points).PHP_EOL);
+
         return Command::SUCCESS;
     }
 
-    protected function getFrames(string $score)
+    protected function getFrames(string $score): array
     {
         return explode(' ', $score);
     }
 
 
-    protected function getRolls($frame, $throw)
+    protected function getRolls(string $frame, int $throw): void
     {
         $turn = str_split($frame, 1);
         if ($throw < 9) {
@@ -65,7 +65,7 @@ Ten-Pin Bowling, produces the total score for the game.');
         }
     }
 
-    protected function pairAnalisys($turn)
+    protected function pairAnalisys(array $turn): void
     {
         if ($turn[0] == 'X' && count($turn) == 1) {
             array_push($this->rolls, 10, 0);
@@ -78,7 +78,7 @@ Ten-Pin Bowling, produces the total score for the game.');
         }
     }
 
-    protected function finalFrame($turn)
+    protected function finalFrame(array $turn): void
     {
         foreach ($turn as $shot) {
             if ($shot == 'X') {
@@ -91,9 +91,10 @@ Ten-Pin Bowling, produces the total score for the game.');
         }
     }
 
-    protected function calculatePoints()
+    protected function calculatePoints(): void
     {
-        for ($i = 0; $i < count($this->rolls) - 1; $i += 2) {
+        $limit = count($this->rolls) - 1;
+        for ($i = 0; $i < $limit ; $i += 2) {
             if ($this->rolls[$i] == 10 && $this->rolls[$i + 1] == 0) { //Strike
                 //Need to detect two strikes in a row
                 if ($this->rolls[$i + 2] == 10 && $this->rolls[$i + 3] == 0) {
@@ -102,7 +103,7 @@ Ten-Pin Bowling, produces the total score for the game.');
                     $value = $this->rolls[$i + 2] + $this->rolls[$i + 3];
                 }
                 $this->points[] = end($this->points) + 10 + $value;
-            } elseif (($this->rolls[$i] + $this->rolls[$i + 1]) == 10 && $this->rolls[$i + 1] != 0) { //Spare
+            } elseif (intval($this->rolls[$i] + $this->rolls[$i + 1]) == 10 && $this->rolls[$i + 1] != 0) { //Spare
                 $this->points[] = end($this->points) + 10 + $this->rolls[$i + 2];
             } else { // Open Frame
                 $this->points[] = end($this->points) + $this->rolls[$i] + $this->rolls[$i + 1];
@@ -111,7 +112,8 @@ Ten-Pin Bowling, produces the total score for the game.');
         array_shift($this->points);
 
         $last = 0;
-        for ($i = 18; $i < count($this->rolls); $i++) {
+        $limit = count($this->rolls);
+        for ($i = 18; $i < $limit; $i++) {
             $last += $this->rolls[$i];
         }
 
